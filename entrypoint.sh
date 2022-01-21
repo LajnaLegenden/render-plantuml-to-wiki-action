@@ -50,7 +50,6 @@ echo "=> Starting render process ..."
 ORIGINAL_IFS="$IFS"
 IFS='
 '
-$i = 0
 for file in $input_files
 do
     input_filepath=$file
