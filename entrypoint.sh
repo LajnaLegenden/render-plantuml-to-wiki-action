@@ -5,7 +5,7 @@
 
 # Set paths inside Docker container:
 local_input_dir=$INPUT_INPUT_DIR
-local_output_dir="output"
+local_output_dir="/tmp/output"
 
 artifacts_repo="https://${INPUT_WIKI_TOKEN}@github.com/${GITHUB_REPOSITORY}.wiki.git"
 artifacts_upload_dir=$INPUT_OUTPUT_DIR
@@ -38,7 +38,7 @@ git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 input_files=$(find "$local_input_dir" -type f -name '*' -print)
 
 echo "=> Downloading PlantUML Java app ..."
-wget --quiet -O plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.1.2020.15.jar/download
+wget --quiet -O /tmp/plantuml.jar https://sourceforge.net/projects/plantuml/files/plantuml.1.2020.15.jar/download
 
 echo "=> Preparing output dir ..."
 mkdir -p "$local_output_dir"
@@ -56,28 +56,20 @@ do
     output_filepath=$(dirname $(echo $file | sed -e "s@^${local_input_dir}@${local_output_dir}@"))
 
     echo " > processing '$input_filepath'"
-    java -jar plantuml.jar -charset UTF-8 -output "${GITHUB_WORKSPACE}/${output_filepath}" "${GITHUB_WORKSPACE}/${input_filepath}"
+    java -jar /tmp/plantuml.jar -charset UTF-8 -output "tmp/${output_filepath}" "${GITHUB_WORKSPACE}/${input_filepath}"
 done
 IFS="$ORIGINAL_IFS"
 # source: https://unix.stackexchange.com/questions/9496/looping-through-files-with-spaces-in-the-names
 
 echo "=> Generated files:"
-ls -l "${GITHUB_WORKSPACE}/${output_filepath}"
+ls -l "tmp/${output_filepath}"
 
 echo "---"
 
-echo "=> Cleaning up possible left-overs from another render step ..."
-rm -r "${GITHUB_WORKSPACE}/artifacts_repo"
-
 ls -la
+ls -la /tmp/output
 exit 1;
-echo "=> Cloning wiki repository ..."
-git clone $artifacts_repo "${GITHUB_WORKSPACE}/artifacts_repo"
-if [ $? -gt 0 ]; then
-    echo "   ERROR: Could not clone repo."
-    echo "   Note: you need to initialize the wiki by creating at least one page before you can use this action!"
-    exit 1
-fi
+
 
 echo "=> Moving generated files to /${artifacts_upload_dir} in wiki repo ..."
 mkdir -p "${GITHUB_WORKSPACE}/artifacts_repo/${artifacts_upload_dir}"
@@ -104,16 +96,3 @@ fi
 echo "=> Done."
 echo "---"
 
-# Print embed tags to help the user:
-echo "You can use the following tags to embed the generated images into wiki pages:"
-output_files=$(find "${GITHUB_WORKSPACE}/artifacts_repo/${artifacts_upload_dir}" -type f -name '*' -print)
-
-ORIGINAL_IFS="$IFS"
-IFS='
-'
-for file in $output_files
-do
-    filename=$(basename $file)
-    echo "[[$(echo ${file} | sed -e "s@^${GITHUB_WORKSPACE}/artifacts_repo@@")|alt=${filename%.*}]]"
-done
-IFS="$ORIGINAL_IFS"
