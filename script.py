@@ -33,7 +33,7 @@ def processFile(file):
     thisImage = list(filter(lambda x: file in x, images.copy()))
     i = 0;
     for match in matches:
-            content = content[:match.start()] + "\n![](" + images + "/" + thisImage[i] + ")\n" + content[match.end():]
+            content = content[:match.start()] + "\n![](" + "images" + "/" + thisImage[i] + ")\n" + content[match.end():]
             i+=1
 
 
