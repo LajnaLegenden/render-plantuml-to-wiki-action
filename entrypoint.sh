@@ -56,13 +56,13 @@ do
     output_filepath=$(dirname $(echo $file | sed -e "s@^${local_input_dir}@${local_output_dir}@"))
 
     echo " > processing '$input_filepath'"
-    java -jar /tmp/plantuml.jar -charset UTF-8 -output "tmp/${output_filepath}" "${GITHUB_WORKSPACE}/${input_filepath}"
+    java -jar /tmp/plantuml.jar -charset UTF-8 -output "${output_filepath}" "${GITHUB_WORKSPACE}/${input_filepath}"
 done
 IFS="$ORIGINAL_IFS"
 # source: https://unix.stackexchange.com/questions/9496/looping-through-files-with-spaces-in-the-names
 
 echo "=> Generated files:"
-ls -l "tmp/${output_filepath}"
+ls -l "${output_filepath}"
 
 echo "---"
 

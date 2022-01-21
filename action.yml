@@ -26,3 +26,4 @@ runs:
     args:
         - ${{ inputs.WIKI_TOKEN }}
         - ${{ inputs.INPUT_DIR }}
+        - ${{ inputs.OUTPUT_DIR }}
