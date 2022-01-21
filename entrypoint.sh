@@ -69,7 +69,7 @@ echo "---"
 ls -la
 ls -la /tmp/output
 
-python3 
+python3 script.py
 
 exit 1;
 
