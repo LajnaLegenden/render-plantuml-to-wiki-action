@@ -26,8 +26,18 @@ def processFile(file):
 
     images =  [f for f in listdir(imageDir) if isfile(join(imageDir, f))]
 
-    print(images)
-    
+    images = images[::-1]
+
+    #Append the images to the content after each match in markdown format
+
+    for match in matches:
+        thisImage = filter(lambda x: file in x, images.copy())
+        if len(thisImage) > 0:
+            thisImage = thisImage[0]
+            content = content[:match.start()] + "\n![](" + imageDir + "/" + thisImage + ")\n" + content[match.end():]
+
+
+
 
 
 if __name__ == "__main__":
