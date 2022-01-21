@@ -69,6 +69,8 @@ echo "---"
 echo "=> Cleaning up possible left-overs from another render step ..."
 rm -r "${GITHUB_WORKSPACE}/artifacts_repo"
 
+ls -la
+exit 1;
 echo "=> Cloning wiki repository ..."
 git clone $artifacts_repo "${GITHUB_WORKSPACE}/artifacts_repo"
 if [ $? -gt 0 ]; then

@@ -6,8 +6,8 @@
 # doesnt leak your documentation to the public and can
 # therefore be used in private repositories.
 
-name: Render PlantUML to Wiki
-description: Renders PlantUML diagrams and pushes the generated PNG files to your repo's wiki
+name: Render PlantUML to Markdown files
+description: Renders PlantUML diagrams and add them as an image in your markdown files
 branding:
     icon: file-text
     color: blue
@@ -19,9 +19,6 @@ inputs:
     INPUT_DIR:
         description: Directory in repo to read PlantUML source files from
         default: /input_directory
-    OUTPUT_DIR:
-        description: Directory in wiki to write rendered diagrams to
-        default: /output_directory
 
 runs:
     using: Docker
@@ -29,4 +26,3 @@ runs:
     args:
         - ${{ inputs.WIKI_TOKEN }}
         - ${{ inputs.INPUT_DIR }}
-        - ${{ inputs.OUTPUT_DIR }}
